@@ -59,7 +59,7 @@ export function DashboardProfile({ profileData, isLoading = false }: DashboardPr
   }
 
   return (
-    <div className="h-full min-h-[600px] lg:h-[97vh] flex flex-col p-4 bg-white dark:bg-zinc-900 rounded-lg shadow-sm">
+    <div className="h-full min-h-[600px] lg:h-[96vh] flex flex-col p-4 bg-white dark:bg-zinc-900 rounded-lg shadow-sm">
       {/* Profile Header */}
       <div className="flex flex-col items-center mb-6">
         <div className="relative w-32 h-32 rounded-full overflow-hidden border-2 border-gray-200 dark:border-gray-700 mb-3">
