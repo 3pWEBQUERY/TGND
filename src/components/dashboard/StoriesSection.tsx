@@ -70,9 +70,22 @@ export function StoriesSection({ stories }: StoriesSectionProps) {
       {/* Desktop Grid View - Genau 5 Stories */}
       <div className="hidden md:block">
         <div className="grid grid-cols-5 gap-4">
-          {stories.slice(0, 5).map((story) => (
+          {/* Story erstellen Card */}
+          <div className="relative group cursor-pointer">
+            <div className="h-64 rounded-lg overflow-hidden bg-[hsl(345.3,82.7%,40.8%)] flex flex-col items-center justify-center">
+              <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center mb-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[hsl(345.3,82.7%,40.8%)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+              </div>
+              <span className="text-xs font-medium text-white">Story erstellen</span>
+            </div>
+          </div>
+          
+          {/* Reguläre Stories */}
+          {stories.slice(0, 4).map((story) => (
             <div key={story.id} className="relative group cursor-pointer">
-              <div className="aspect-square rounded-lg overflow-hidden bg-black">
+              <div className="h-64 rounded-lg overflow-hidden bg-black">
                 <img 
                   src={story.image} 
                   alt={story.title} 
@@ -101,9 +114,22 @@ export function StoriesSection({ stories }: StoriesSectionProps) {
           className="w-full touch-pan-y"
         >
           <CarouselContent>
+            {/* Story erstellen Card - Mobile */}
+            <CarouselItem className="basis-1/2 min-w-[45%] pl-2">
+              <div className="relative group cursor-pointer h-64 rounded-lg overflow-hidden bg-[hsl(345.3,82.7%,40.8%)] flex flex-col items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center mb-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[hsl(345.3,82.7%,40.8%)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                </div>
+                <span className="text-xs font-medium text-white">Story erstellen</span>
+              </div>
+            </CarouselItem>
+            
+            {/* Reguläre Stories - Mobile */}
             {stories.map((story) => (
               <CarouselItem key={story.id} className="basis-1/2 min-w-[45%] pl-2">
-                <div className="relative group cursor-pointer aspect-square rounded-lg overflow-hidden bg-black">
+                <div className="relative group cursor-pointer h-64 rounded-lg overflow-hidden bg-black">
                   <img 
                     src={story.image} 
                     alt={story.title} 
