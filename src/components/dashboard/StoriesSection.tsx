@@ -20,7 +20,6 @@ interface StoryItem {
 
 interface StoriesSectionProps {
   stories: StoryItem[];
-  activeFilter?: string;
 }
 
 export function StoriesSection({ stories }: StoriesSectionProps) {
@@ -68,21 +67,12 @@ export function StoriesSection({ stories }: StoriesSectionProps) {
         </div>
       )}
       
-      {/* Optimized Shadcn UI Carousel */}
-      <Carousel
-        opts={{
-          align: "start",
-          loop: true,
-          dragFree: true,
-          containScroll: false,
-        }}
-        setApi={setApi}
-        className="w-full touch-pan-y"
-      >
-        <CarouselContent>
-          {stories.map((story) => (
-            <CarouselItem key={story.id} className="md:basis-1/3 lg:basis-1/5 basis-1/2 min-w-[45%] pl-2 md:pl-4">
-              <div className="relative group cursor-pointer aspect-square rounded-lg overflow-hidden bg-black">
+      {/* Desktop Grid View - Genau 5 Stories */}
+      <div className="hidden md:block">
+        <div className="grid grid-cols-5 gap-4">
+          {stories.slice(0, 5).map((story) => (
+            <div key={story.id} className="relative group cursor-pointer">
+              <div className="aspect-square rounded-lg overflow-hidden bg-black">
                 <img 
                   src={story.image} 
                   alt={story.title} 
@@ -93,32 +83,58 @@ export function StoriesSection({ stories }: StoriesSectionProps) {
                   <span className="text-xs font-medium text-white shadow-sm">{story.title}</span>
                 </div>
               </div>
-            </CarouselItem>
+            </div>
           ))}
-        </CarouselContent>
-        
-        {/* Navigation buttons - visible only on desktop, mit angepassten Farben */}
-        <div className="hidden md:block">
-          <CarouselPrevious className="absolute -left-4 top-1/2 transform -translate-y-1/2 bg-[hsl(345.3,82.7%,40.8%)] text-white border-none hover:bg-[hsl(345.3,82.7%,35%)] hover:text-white" />
-          <CarouselNext className="absolute -right-4 top-1/2 transform -translate-y-1/2 bg-[hsl(345.3,82.7%,40.8%)] text-white border-none hover:bg-[hsl(345.3,82.7%,35%)] hover:text-white" />
         </div>
-      </Carousel>
+      </div>
       
-      {/* Indicator dots for mobile */}
-      {isMobile && count > 0 && (
-        <div className="flex justify-center mt-3 space-x-1">
-          {Array.from({ length: count }).map((_, index) => (
-            <button
-              key={index}
-              className={`w-1.5 h-1.5 rounded-full transition-colors ${
-                index === current ? "bg-[hsl(345.3,82.7%,40.8%)]" : "bg-gray-300 dark:bg-gray-700"
-              }`}
-              onClick={() => api?.scrollTo(index)}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
-        </div>
-      )}
+      {/* Mobile Carousel View */}
+      <div className="md:hidden">
+        <Carousel
+          opts={{
+            align: "start",
+            loop: true,
+            dragFree: true,
+            containScroll: false,
+          }}
+          setApi={setApi}
+          className="w-full touch-pan-y"
+        >
+          <CarouselContent>
+            {stories.map((story) => (
+              <CarouselItem key={story.id} className="basis-1/2 min-w-[45%] pl-2">
+                <div className="relative group cursor-pointer aspect-square rounded-lg overflow-hidden bg-black">
+                  <img 
+                    src={story.image} 
+                    alt={story.title} 
+                    className="w-full h-full object-cover transition duration-300 group-hover:scale-105 opacity-95"
+                    loading="lazy"
+                  />
+                  <div className="absolute bottom-0 left-0 right-0 p-2 text-center">
+                    <span className="text-xs font-medium text-white shadow-sm">{story.title}</span>
+                  </div>
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          
+          {/* Indicator dots for mobile */}
+          {count > 0 && (
+            <div className="flex justify-center mt-3 space-x-1">
+              {Array.from({ length: count }).map((_, index) => (
+                <button
+                  key={index}
+                  className={`w-1.5 h-1.5 rounded-full transition-colors ${
+                    index === current ? "bg-[hsl(345.3,82.7%,40.8%)]" : "bg-gray-300 dark:bg-gray-700"
+                  }`}
+                  onClick={() => api?.scrollTo(index)}
+                  aria-label={`Go to slide ${index + 1}`}
+                />
+              ))}
+            </div>
+          )}
+        </Carousel>
+      </div>
     </section>
   );
 } 

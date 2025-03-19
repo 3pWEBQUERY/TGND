@@ -81,7 +81,7 @@ export function PhotoFeed({ photos }: PhotoFeedProps) {
         <CarouselContent>
           {photos.map((photo) => (
             <CarouselItem key={photo.id} className={`md:basis-1/2 lg:basis-1/3 basis-full pl-2 md:pl-4`}>
-              <div className="h-60 rounded-lg overflow-hidden shadow-sm group cursor-pointer bg-black">
+              <div className="h-80 md:h-96 rounded-lg overflow-hidden shadow-sm group cursor-pointer bg-black">
                 <img 
                   src={photo.image} 
                   alt="Photo" 

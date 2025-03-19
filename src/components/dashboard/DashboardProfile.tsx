@@ -29,7 +29,7 @@ export function DashboardProfile({ profileData, isLoading = false }: DashboardPr
 
   if (isLoading) {
     return (
-      <div className="h-full flex flex-col p-4 bg-white dark:bg-zinc-900 rounded-lg shadow-sm animate-pulse">
+      <div className="h-full min-h-[600px] lg:min-h-[700px] flex flex-col p-4 bg-white dark:bg-zinc-900 rounded-lg shadow-sm animate-pulse">
         <div className="flex flex-col items-center mb-6">
           <div className="w-32 h-32 rounded-full bg-gray-300 dark:bg-gray-700 mb-3" />
           <div className="h-6 bg-gray-300 dark:bg-gray-700 rounded w-32 mb-2" />
@@ -51,7 +51,7 @@ export function DashboardProfile({ profileData, isLoading = false }: DashboardPr
           </div>
         </div>
         
-        <div className="mb-6">
+        <div className="mb-6 flex-grow">
           <div className="h-16 bg-gray-300 dark:bg-gray-700 rounded w-full" />
         </div>
       </div>
@@ -59,7 +59,7 @@ export function DashboardProfile({ profileData, isLoading = false }: DashboardPr
   }
 
   return (
-    <div className="h-full flex flex-col p-4 bg-white dark:bg-zinc-900 rounded-lg shadow-sm">
+    <div className="h-full min-h-[600px] lg:min-h-[700px] flex flex-col p-4 bg-white dark:bg-zinc-900 rounded-lg shadow-sm">
       {/* Profile Header */}
       <div className="flex flex-col items-center mb-6">
         <div className="relative w-32 h-32 rounded-full overflow-hidden border-2 border-gray-200 dark:border-gray-700 mb-3">
@@ -122,22 +122,24 @@ export function DashboardProfile({ profileData, isLoading = false }: DashboardPr
       </div>
       
       {/* Favorite Profiles */}
-      {favoriteProfiles.length > 0 && (
-        <div>
-          <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Favorite Profiles</h3>
-          <div className="flex space-x-2">
-            {favoriteProfiles.map((profile) => (
-              <div key={profile.id} className="w-8 h-8 rounded-md overflow-hidden">
-                <img 
-                  src={profile.avatar} 
-                  alt="Profile" 
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            ))}
+      <div className="flex-grow">
+        {favoriteProfiles.length > 0 && (
+          <div>
+            <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Favorite Profiles</h3>
+            <div className="flex space-x-2">
+              {favoriteProfiles.map((profile) => (
+                <div key={profile.id} className="w-8 h-8 rounded-md overflow-hidden">
+                  <img 
+                    src={profile.avatar} 
+                    alt="Profile" 
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 } 
