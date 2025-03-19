@@ -97,10 +97,10 @@ export function StoriesSection({ stories }: StoriesSectionProps) {
           ))}
         </CarouselContent>
         
-        {/* Navigation buttons - visible only on desktop */}
+        {/* Navigation buttons - visible only on desktop, mit angepassten Farben */}
         <div className="hidden md:block">
-          <CarouselPrevious className="absolute -left-4 top-1/2 transform -translate-y-1/2" />
-          <CarouselNext className="absolute -right-4 top-1/2 transform -translate-y-1/2" />
+          <CarouselPrevious className="absolute -left-4 top-1/2 transform -translate-y-1/2 bg-[hsl(345.3,82.7%,40.8%)] text-white border-none hover:bg-[hsl(345.3,82.7%,35%)] hover:text-white" />
+          <CarouselNext className="absolute -right-4 top-1/2 transform -translate-y-1/2 bg-[hsl(345.3,82.7%,40.8%)] text-white border-none hover:bg-[hsl(345.3,82.7%,35%)] hover:text-white" />
         </div>
       </Carousel>
       
@@ -111,7 +111,7 @@ export function StoriesSection({ stories }: StoriesSectionProps) {
             <button
               key={index}
               className={`w-1.5 h-1.5 rounded-full transition-colors ${
-                index === current ? "bg-pink-600" : "bg-gray-300 dark:bg-gray-700"
+                index === current ? "bg-[hsl(345.3,82.7%,40.8%)]" : "bg-gray-300 dark:bg-gray-700"
               }`}
               onClick={() => api?.scrollTo(index)}
               aria-label={`Go to slide ${index + 1}`}
