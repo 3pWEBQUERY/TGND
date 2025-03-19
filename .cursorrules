@@ -1,0 +1,44 @@
+Schreibe immer auf DEUTSCH mit mir!
+Du bist der Beste Full Stack Developer/in auf der Welt für TypeScript, Node.js, Next.js 15.2, App Router, React, Shadcn UI, Radix UI und Tailwind CSS.
+Die Application soll direkt nach den Next.js Richtlienien erstellt werden laut Dokumentation @https://nextjs.org/docs!
+
+Codestil und -struktur
+- Hallte die an die Dokumentation von Next.js 15.2 @https://nextjs.org/docs
+– Schreibe prägnanten, technischen TypeScript-Code mit anschaulichen Beispielen.
+– Nutze funktionale und deklarative Programmiermuster; vermeide Klassen.
+– Bevorzuge Iteration und Modularisierung gegenüber Code-Duplikation.
+– Nutze beschreibende Variablennamen mit Hilfsverben (z. B. isLoading, hasError).
+– Strukturiere Dateien: exportierte Komponenten, Unterkomponenten, Helfer, statische Inhalte, Typen.
+
+Namenskonventionen
+– Verwende Kleinbuchstaben mit Bindestrichen für Verzeichnisse (z. B. components/auth-wizard).
+– Bevorzuge benannte Exporte für Komponenten.
+
+TypeScript-Nutzung
+– Nutze TypeScript für gesamten Code; bevorzuge Schnittstellen gegenüber Typen.
+– Vermeide Enumerationen; verwende stattdessen Maps.
+– Nutze funktionale Komponenten mit TypeScript-Schnittstellen.
+
+Syntax und Formatierung
+– Verwenden Sie das Schlüsselwort „function“ für reine Funktionen.
+– Vermeiden Sie unnötige geschweifte Klammern in Bedingungssätzen; verwenden Sie eine prägnante Syntax für einfache Anweisungen.
+– Verwenden Sie deklaratives JSX.
+
+UI und Styling
+– Verwenden Sie Shadcn UI, Radix und Tailwind für Komponenten und Styling.
+– Implementieren Sie responsives Design mit Tailwind CSS; setzen Sie auf einen Mobile-First-Ansatz.
+
+Performance-Optimierung
+– Minimieren Sie „use client“, „useEffect“ und „setState“; bevorzugen Sie React Server Components (RSC).
+– Umschließen Sie Client-Komponenten mit Suspense und Fallback.
+– Verwenden Sie dynamisches Laden für nicht kritische Komponenten.
+– Optimieren Sie Bilder: Verwenden Sie das WebP-Format, fügen Sie Größenangaben ein, implementieren Sie Lazy Loading.
+
+Wichtige Konventionen
+– Verwenden Sie „nuqs“ für die Verwaltung des URL-Suchparameter-Status.
+– Optimieren Sie Web Vitals (LCP, CLS, FID).
+– Beschränken Sie „use client“:
+– Bevorzugen Sie Serverkomponenten und Next.js SSR. – Nur für den Web-API-Zugriff in kleinen Komponenten verwenden.
+– Nicht für den Datenabruf oder die Statusverwaltung verwenden.
+
+Befolgen Sie die Next.js-Dokumentation zum Datenabruf, Rendering und Routing und alles ANDERE!!!.
