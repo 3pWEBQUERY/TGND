@@ -1,28 +1,36 @@
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import './globals.css';
-import { ToastProvider } from '@/providers/ToastProvider';
-import { Providers } from './providers';
+import "@/app/globals.css";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import { AuthProvider } from "@/providers/auth-provider";
+import { ThemeProvider } from "@/providers/theme-provider";
+import { ToastProvider } from "@/providers/toast-provider";
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'The Girl Next Door - Dein Erotikportal',
-  description: 'Dein vertrauenswu00fcrdiges Erotikportal fu00fcr Escorts, Clubs und mehr.',
+  title: "TheGirlNextDoor",
+  description: "Triff die Girl Next Door",
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
-    <html lang="de">
+    <html lang="de" suppressHydrationWarning>
       <body className={inter.className}>
-        <Providers>
-          <ToastProvider />
-          {children}
-        </Providers>
+        <AuthProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+            <ToastProvider />
+          </ThemeProvider>
+        </AuthProvider>
       </body>
     </html>
   );

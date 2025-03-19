@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter, usePathname } from 'next/navigation';
 
 interface SidebarProps {
   activeItem?: string;
@@ -10,6 +11,8 @@ interface SidebarProps {
 }
 
 export function DashboardSidebar({ activeItem = 'feed', onItemClick }: SidebarProps) {
+  const router = useRouter();
+  const pathname = usePathname();
   const [active, setActive] = useState<string>(activeItem);
 
   useEffect(() => {
@@ -17,8 +20,21 @@ export function DashboardSidebar({ activeItem = 'feed', onItemClick }: SidebarPr
     setActive(activeItem);
   }, [activeItem]);
 
-  const handleClick = (item: string) => {
+  // Bestimme den aktiven Menüpunkt basierend auf dem Pfad
+  useEffect(() => {
+    if (pathname === '/dashboard') setActive('feed');
+    else if (pathname === '/dashboard/profile') setActive('explore');
+    else if (pathname === '/dashboard/newsfeed') setActive('trending');
+    else if (pathname === '/dashboard/stories') setActive('people');
+    else if (pathname === '/dashboard/notifications') setActive('notifications');
+    else if (pathname === '/dashboard/messages') setActive('direct');
+    else if (pathname === '/dashboard/settings') setActive('stats');
+  }, [pathname]);
+
+  const handleClick = (item: string, path: string) => {
     setActive(item);
+    router.push(path);
+    
     if (onItemClick) {
       onItemClick(item);
     }
@@ -45,7 +61,7 @@ export function DashboardSidebar({ activeItem = 'feed', onItemClick }: SidebarPr
         {/* Feed */}
         <div className="relative group">
           <button
-            onClick={() => handleClick('feed')}
+            onClick={() => handleClick('feed', '/dashboard')}
             className={`p-2 rounded-lg transition-all duration-200 
               ${active === 'feed' 
                 ? 'text-white bg-[hsl(345.3,82.7%,40.8%)]' 
@@ -63,7 +79,7 @@ export function DashboardSidebar({ activeItem = 'feed', onItemClick }: SidebarPr
         {/* Mein Profil */}
         <div className="relative group">
           <button
-            onClick={() => handleClick('explore')}
+            onClick={() => handleClick('explore', '/dashboard/profile')}
             className={`p-2 rounded-lg transition-all duration-200 
               ${active === 'explore' 
                 ? 'text-white bg-[hsl(345.3,82.7%,40.8%)]' 
@@ -81,7 +97,7 @@ export function DashboardSidebar({ activeItem = 'feed', onItemClick }: SidebarPr
         {/* Newsfeed */}
         <div className="relative group">
           <button
-            onClick={() => handleClick('trending')}
+            onClick={() => handleClick('trending', '/dashboard/newsfeed')}
             className={`p-2 rounded-lg transition-all duration-200 
               ${active === 'trending' 
                 ? 'text-white bg-[hsl(345.3,82.7%,40.8%)]' 
@@ -99,7 +115,7 @@ export function DashboardSidebar({ activeItem = 'feed', onItemClick }: SidebarPr
         {/* Stories */}
         <div className="relative group">
           <button
-            onClick={() => handleClick('people')}
+            onClick={() => handleClick('people', '/dashboard/stories')}
             className={`p-2 rounded-lg transition-all duration-200 
               ${active === 'people' 
                 ? 'text-white bg-[hsl(345.3,82.7%,40.8%)]' 
@@ -117,7 +133,7 @@ export function DashboardSidebar({ activeItem = 'feed', onItemClick }: SidebarPr
         {/* Benachrichtigungen */}
         <div className="relative group">
           <button
-            onClick={() => handleClick('notifications')}
+            onClick={() => handleClick('notifications', '/dashboard/notifications')}
             className={`p-2 rounded-lg transition-all duration-200 
               ${active === 'notifications' 
                 ? 'text-white bg-[hsl(345.3,82.7%,40.8%)]' 
@@ -135,7 +151,7 @@ export function DashboardSidebar({ activeItem = 'feed', onItemClick }: SidebarPr
         {/* Nachrichten */}
         <div className="relative group">
           <button
-            onClick={() => handleClick('direct')}
+            onClick={() => handleClick('direct', '/dashboard/messages')}
             className={`p-2 rounded-lg transition-all duration-200 
               ${active === 'direct' 
                 ? 'text-white bg-[hsl(345.3,82.7%,40.8%)]' 
@@ -153,7 +169,7 @@ export function DashboardSidebar({ activeItem = 'feed', onItemClick }: SidebarPr
         {/* Einstellungen */}
         <div className="relative group">
           <button
-            onClick={() => handleClick('stats')}
+            onClick={() => handleClick('stats', '/dashboard/settings')}
             className={`p-2 rounded-lg transition-all duration-200 
               ${active === 'stats' 
                 ? 'text-white bg-[hsl(345.3,82.7%,40.8%)]' 
