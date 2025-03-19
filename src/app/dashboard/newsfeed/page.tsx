@@ -81,8 +81,14 @@ function NewsFeedWithDashboard() {
         onItemClick={handleSidebarItemClick} 
       />
       
-      <main className="flex-1 ml-16 p-6">
-        <div className="flex flex-col lg:flex-row gap-6">
+      <main className="flex-1 ml-16 p-2 sm:p-4 md:p-6">
+        {/* Auf mobilen Geräten nur den Newsfeed anzeigen */}
+        <div className="md:hidden">
+          <NewsFeedContent />
+        </div>
+        
+        {/* Auf Tablets und größeren Geräten das Layout mit Profil anzeigen */}
+        <div className="hidden md:flex md:flex-col lg:flex-row gap-6">
           {/* Linker Bereich - Profil */}
           <div className="lg:w-1/4 w-full">
             <DashboardProfile profileData={profileData} isLoading={isLoading} />
