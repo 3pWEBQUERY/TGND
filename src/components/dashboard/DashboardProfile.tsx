@@ -29,7 +29,7 @@ export function DashboardProfile({ profileData, isLoading = false }: DashboardPr
 
   if (isLoading) {
     return (
-      <div className="h-full min-h-[600px] lg:min-h-[700px] flex flex-col p-4 bg-white dark:bg-zinc-900 rounded-lg shadow-sm animate-pulse">
+      <div className="h-full min-h-[600px] lg:h-[80vh] flex flex-col p-4 bg-white dark:bg-zinc-900 rounded-lg shadow-sm animate-pulse">
         <div className="flex flex-col items-center mb-6">
           <div className="w-32 h-32 rounded-full bg-gray-300 dark:bg-gray-700 mb-3" />
           <div className="h-6 bg-gray-300 dark:bg-gray-700 rounded w-32 mb-2" />
@@ -59,7 +59,7 @@ export function DashboardProfile({ profileData, isLoading = false }: DashboardPr
   }
 
   return (
-    <div className="h-full min-h-[600px] lg:min-h-[700px] flex flex-col p-4 bg-white dark:bg-zinc-900 rounded-lg shadow-sm">
+    <div className="h-full min-h-[600px] lg:h-[97vh] flex flex-col p-4 bg-white dark:bg-zinc-900 rounded-lg shadow-sm">
       {/* Profile Header */}
       <div className="flex flex-col items-center mb-6">
         <div className="relative w-32 h-32 rounded-full overflow-hidden border-2 border-gray-200 dark:border-gray-700 mb-3">
