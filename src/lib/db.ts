@@ -6,7 +6,7 @@ declare global {
 }
 
 // Direkter Verbindungsstring (nur für Entwicklung, in Produktion immer env-Variablen verwenden)
-const neonDbUrl = process.env.DATABASE_URL || 'postgresql://TheGirlNextDoor_owner:npg_7zL4osPIfGNn@ep-late-union-a2mxt6b9-pooler.eu-central-1.aws.neon.tech/TheGirlNextDoor?sslmode=require';
+const neonDbUrl = process.env.DATABASE_URL;
 
 export const db = globalThis.prisma || new PrismaClient({
   datasources: {
