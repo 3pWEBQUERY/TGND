@@ -1,109 +1,93 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-}
-
-enum UserRole {
-  ADMIN
-  MEMBER
-  ESCORT
-  AGENCY
-  CLUB
-  STUDIO
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
+  id             String    @id @default(cuid())
+  name           String?
+  email          String?   @unique
+  emailVerified  DateTime?
+  image          String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
   hashedPassword String?
-  role          UserRole  @default(MEMBER)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-
-  profile       Profile?
-  accounts      Account[]
-  sessions      Session[]
-  posts         Post[]
-  comments      Comment[]
-  replies       Reply[]
-  likes         Like[]
-  votes         Vote[]
-  followers     Follow[]    @relation("Follower")
-  following     Follow[]    @relation("Following")
+  role           UserRole  @default(MEMBER)
+  accounts       Account[]
+  comments       Comment[]
+  followers      Follow[]  @relation("Follower")
+  following      Follow[]  @relation("Following")
+  likes          Like[]
+  posts          Post[]
+  profile        Profile?
+  replies        Reply[]
+  sessions       Session[]
+  votes          Vote[]
 }
 
 model Profile {
-  id            String    @id @default(cuid())
-  userId        String    @unique
-  displayName   String?
-  profileImage  String?   // URL zum Profilbild in Vercel Blob Storage
-  location      String?
-  gender        String?
-  age           Int?
-  bio           String?   @db.Text
-  isVerified    Boolean   @default(false)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  bio          String?
+  location     String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  age          Int?
+  displayName  String?
+  gender       String?
+  isVerified   Boolean  @default(false)
+  profileImage String?
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Post {
-  id            String    @id @default(cuid())
-  content       String    @db.Text
-  images        String[]  // Array von URLs zu Bildern
-  videos        String[]  // Array von URLs zu Videos
-  type          String    @default("standard")
-  location      String?
-  authorId      String    
-  isPublished   Boolean   @default(true)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-
-  author        User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  comments      Comment[]
-  likes         Like[]
-  poll          Poll?
+  id          String    @id @default(cuid())
+  content     String
+  images      String[]
+  videos      String[]
+  type        String    @default("standard")
+  location    String?
+  authorId    String
+  isPublished Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  comments    Comment[]
+  likes       Like[]
+  poll        Poll?
+  author      User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
   @@index([authorId])
 }
 
 model Poll {
-  id            String       @id @default(cuid())
-  postId        String       @unique
-  question      String
-  options       PollOption[]
-  post          Post         @relation(fields: [postId], references: [id], onDelete: Cascade)
+  id       String       @id @default(cuid())
+  postId   String       @unique
+  question String
+  post     Post         @relation(fields: [postId], references: [id], onDelete: Cascade)
+  options  PollOption[]
 }
 
 model PollOption {
-  id            String       @id @default(cuid())
-  pollId        String
-  text          String
-  votes         Vote[]
-  poll          Poll         @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  id     String @id @default(cuid())
+  pollId String
+  text   String
+  poll   Poll   @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  votes  Vote[]
 
   @@index([pollId])
 }
 
 model Vote {
-  id            String       @id @default(cuid())
-  userId        String
-  optionId      String
-  createdAt     DateTime     @default(now())
-  
-  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  option        PollOption   @relation(fields: [optionId], references: [id], onDelete: Cascade)
+  id        String     @id @default(cuid())
+  userId    String
+  optionId  String
+  createdAt DateTime   @default(now())
+  option    PollOption @relation(fields: [optionId], references: [id], onDelete: Cascade)
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, optionId])
   @@index([userId])
@@ -111,50 +95,47 @@ model Vote {
 }
 
 model Comment {
-  id            String    @id @default(cuid())
-  content       String    @db.Text
-  authorId      String    
-  postId        String    
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-
-  author        User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  post          Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
-  replies       Reply[]
-  likes         Like[]
+  id        String   @id @default(cuid())
+  content   String
+  authorId  String
+  postId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  likes     Like[]
+  replies   Reply[]
 
   @@index([authorId])
   @@index([postId])
 }
 
 model Reply {
-  id            String    @id @default(cuid())
-  content       String    @db.Text
-  authorId      String    
-  commentId     String    
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-
-  author        User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  comment       Comment   @relation(fields: [commentId], references: [id], onDelete: Cascade)
-  likes         Like[]
+  id        String   @id @default(cuid())
+  content   String
+  authorId  String
+  commentId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  likes     Like[]
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
 
   @@index([authorId])
   @@index([commentId])
 }
 
 model Like {
-  id            String    @id @default(cuid())
-  userId        String    
-  postId        String?   
-  commentId     String?   
-  replyId       String?   
-  createdAt     DateTime  @default(now())
-
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  post          Post?     @relation(fields: [postId], references: [id], onDelete: Cascade)
-  comment       Comment?  @relation(fields: [commentId], references: [id], onDelete: Cascade)
-  reply         Reply?    @relation(fields: [replyId], references: [id], onDelete: Cascade)
+  id        String   @id @default(cuid())
+  userId    String
+  postId    String?
+  commentId String?
+  replyId   String?
+  createdAt DateTime @default(now())
+  comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  post      Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  reply     Reply?   @relation(fields: [replyId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, postId, commentId, replyId])
   @@index([userId])
@@ -164,13 +145,12 @@ model Like {
 }
 
 model Follow {
-  id            String    @id @default(cuid())
-  followerId    String    // Wer folgt
-  followingId   String    // Wem wird gefolgt
-  createdAt     DateTime  @default(now())
-
-  follower      User      @relation("Follower", fields: [followerId], references: [id], onDelete: Cascade)
-  following     User      @relation("Following", fields: [followingId], references: [id], onDelete: Cascade)
+  id          String   @id @default(cuid())
+  followerId  String
+  followingId String
+  createdAt   DateTime @default(now())
+  follower    User     @relation("Follower", fields: [followerId], references: [id], onDelete: Cascade)
+  following   User     @relation("Following", fields: [followingId], references: [id], onDelete: Cascade)
 
   @@unique([followerId, followingId])
   @@index([followerId])
@@ -178,20 +158,19 @@ model Follow {
 }
 
 model Account {
-  id                 String  @id @default(cuid())
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?  @db.Text
-  access_token       String?  @db.Text
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?  @db.Text
-  session_state      String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -210,4 +189,13 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+enum UserRole {
+  ADMIN
+  MEMBER
+  ESCORT
+  AGENCY
+  CLUB
+  STUDIO
 }

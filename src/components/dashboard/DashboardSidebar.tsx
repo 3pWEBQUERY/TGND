@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
+import { signOut } from "next-auth/react";
 
 interface SidebarProps {
   activeItem?: string;
@@ -182,6 +183,21 @@ export function DashboardSidebar({ activeItem = 'feed', onItemClick }: SidebarPr
           </button>
           <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap">
             Einstellungen
+          </div>
+        </div>
+
+        {/* Logout Button am Ende der Navigation */}
+        <div className="relative group mt-auto">
+          <button
+            onClick={() => signOut({ callbackUrl: '/' })}
+            className="p-2 rounded-lg transition-all duration-200 text-gray-500 dark:text-gray-400 hover:bg-[hsl(345.3,82.7%,40.8%)] hover:text-white"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+          </button>
+          <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap">
+            Ausloggen
           </div>
         </div>
       </nav>
