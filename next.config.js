@@ -19,7 +19,11 @@ const nextConfig = {
     turbotrace: {
       logLevel: 'error'
     },
-    optimizeCss: true,
+    optimizeCss: {
+      critters: {
+        ssrMode: 'strict'
+      }
+    },
     // Aktiviere schnellere Builds
     optimizePackageImports: ['@prisma/client'],
   },
