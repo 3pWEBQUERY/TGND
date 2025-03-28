@@ -16,7 +16,18 @@ const nextConfig = {
     serverActions: {
       allowedOrigins: ['localhost:3000'],
     },
+    turbotrace: {
+      logLevel: 'error'
+    },
+    optimizeCss: true,
+    // Aktiviere schnellere Builds
+    optimizePackageImports: ['@prisma/client'],
   },
+  // Cache-Konfiguration
+  distDir: '.next',
+  output: 'standalone',
+  poweredByHeader: false,
+  compress: true,
 };
 
 module.exports = nextConfig;

@@ -6,15 +6,25 @@
   PRISMA_SKIP_POSTINSTALL_GENERATE = "true"
   NODE_VERSION = "20.11.1"
   NPM_VERSION = "10.2.4"
+  NEXT_TELEMETRY_DISABLED = "1"
+  NEXT_SHARP_PATH = "./node_modules/sharp"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
-# Deaktiviere Caching für Prisma
 [[plugins]]
   package = "netlify-plugin-cache"
   [plugins.inputs]
     paths = [
       "node_modules/.prisma",
-      ".next/cache"
+      ".next/cache",
+      ".next/server/pages",
+      ".next/static"
     ]
+
+[functions]
+  included_files = [".env"]
+  node_bundler = "esbuild"
+
+[build.processing]
+  skip_processing = true
