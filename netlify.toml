@@ -4,6 +4,8 @@
 
 [build.environment]
   PRISMA_SKIP_POSTINSTALL_GENERATE = "true"
+  NODE_VERSION = "20.11.1"
+  NPM_VERSION = "10.2.4"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
@@ -13,6 +15,6 @@
   package = "netlify-plugin-cache"
   [plugins.inputs]
     paths = [
-      "node_modules/.cache",
+      "node_modules/.prisma",
       ".next/cache"
     ]
