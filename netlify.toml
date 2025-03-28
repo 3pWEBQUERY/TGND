@@ -1,0 +1,18 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  PRISMA_SKIP_POSTINSTALL_GENERATE = "true"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# Deaktiviere Caching für Prisma
+[[plugins]]
+  package = "netlify-plugin-cache"
+  [plugins.inputs]
+    paths = [
+      "node_modules/.cache",
+      ".next/cache"
+    ]
