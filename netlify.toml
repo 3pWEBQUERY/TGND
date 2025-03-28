@@ -1,5 +1,5 @@
 [build]
-  command = "npm run build"
+  command = "npx prisma generate && npm run build"
   publish = ".next"
 
 [build.environment]
@@ -28,3 +28,7 @@
 
 [build.processing]
   skip_processing = true
+
+# Stelle sicher, dass Prisma den richtigen Datenbankzugriff hat
+[context.production.environment]
+  DATABASE_URL = "WIRD_IN_NETLIFY_UI_GESETZT"
