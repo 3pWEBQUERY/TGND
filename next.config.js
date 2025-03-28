@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['images.unsplash.com', 'uk0ion1rrnjceue5.public.blob.vercel-storage.com'],
+    domains: ['images.unsplash.com', 'uk0ion1rrnjnjceue5.public.blob.vercel-storage.com'],
   },
   eslint: {
     ignoreDuringBuilds: true,
@@ -10,28 +10,18 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  // Längerer Timeout für die Generierung von statischen Seiten
-  staticPageGenerationTimeout: 120,
   experimental: {
-    serverActions: {
-      allowedOrigins: ['localhost:3000'],
-    },
-    turbotrace: {
-      logLevel: 'error'
-    },
-    optimizeCss: {
-      critters: {
-        ssrMode: 'strict'
-      }
-    },
-    // Aktiviere schnellere Builds
-    optimizePackageImports: ['@prisma/client'],
+    optimizeCss: true,
   },
-  // Cache-Konfiguration
-  distDir: '.next',
   output: 'standalone',
   poweredByHeader: false,
   compress: true,
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.externals = [...config.externals, '@prisma/client', 'bcrypt'];
+    }
+    return config;
+  }
 };
 
 module.exports = nextConfig;
