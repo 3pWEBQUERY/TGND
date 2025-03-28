@@ -2,21 +2,26 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent } from "@/components/ui/card";
 import { X, Plus } from "lucide-react";
+import { toast } from "sonner";
 
 interface PollCreatorProps {
-  onPollCreated: (poll: { question: string; options: string[] }) => void;
+  onSubmit: (question: string, options: string[]) => void;
   onCancel: () => void;
 }
 
-export function PollCreator({ onPollCreated, onCancel }: PollCreatorProps) {
+export function PollCreator({ onSubmit, onCancel }: PollCreatorProps) {
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState<string[]>(["", ""]);
-  const [error, setError] = useState<string | null>(null);
 
   const addOption = () => {
     if (options.length < 10) {
       setOptions([...options, ""]);
+    } else {
+      toast.error("Maximal 10 Optionen erlaubt");
     }
   };
 
@@ -35,56 +40,41 @@ export function PollCreator({ onPollCreated, onCancel }: PollCreatorProps) {
   };
 
   const handleSubmit = () => {
-    // Validierung
     if (!question.trim()) {
-      setError("Bitte gib eine Frage ein.");
+      toast.error("Bitte gib eine Frage ein");
       return;
     }
 
-    const validOptions = options.filter((option) => option.trim() !== "");
+    const validOptions = options.filter(option => option.trim() !== "");
     if (validOptions.length < 2) {
-      setError("Bitte gib mindestens zwei Optionen ein.");
+      toast.error("Bitte gib mindestens zwei Optionen ein");
       return;
     }
 
-    onPollCreated({
-      question: question.trim(),
-      options: validOptions,
-    });
+    onSubmit(question.trim(), validOptions);
   };
 
   return (
-    <div className="space-y-4">
-      <div>
-        <label
-          htmlFor="poll-question"
-          className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-        >
-          Frage
-        </label>
-        <input
-          id="poll-question"
-          type="text"
-          value={question}
-          onChange={(e) => setQuestion(e.target.value)}
-          placeholder="Stelle eine Frage..."
-          className="w-full border rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(345.3,82.7%,40.8%)]"
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-          Optionen
-        </label>
+    <Card>
+      <CardContent className="p-4 space-y-4">
         <div className="space-y-2">
+          <Label htmlFor="poll-question">Frage</Label>
+          <Input
+            id="poll-question"
+            value={question}
+            onChange={(e) => setQuestion(e.target.value)}
+            placeholder="Stelle eine Frage..."
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label>Optionen</Label>
           {options.map((option, index) => (
-            <div key={index} className="flex items-center space-x-2">
-              <input
-                type="text"
+            <div key={index} className="flex items-center gap-2">
+              <Input
                 value={option}
                 onChange={(e) => updateOption(index, e.target.value)}
                 placeholder={`Option ${index + 1}`}
-                className="flex-1 border rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(345.3,82.7%,40.8%)]"
               />
               {options.length > 2 && (
                 <Button
@@ -92,7 +82,6 @@ export function PollCreator({ onPollCreated, onCancel }: PollCreatorProps) {
                   variant="ghost"
                   size="icon"
                   onClick={() => removeOption(index)}
-                  className="text-gray-500 hover:text-red-500"
                 >
                   <X className="h-4 w-4" />
                 </Button>
@@ -105,37 +94,26 @@ export function PollCreator({ onPollCreated, onCancel }: PollCreatorProps) {
           <Button
             type="button"
             variant="outline"
-            size="sm"
+            className="w-full"
             onClick={addOption}
-            className="mt-2 text-gray-500 hover:bg-[hsl(345.3,82.7%,40.8%)] hover:text-white"
           >
-            <Plus className="h-4 w-4 mr-1" />
+            <Plus className="h-4 w-4 mr-2" />
             Option hinzufügen
           </Button>
         )}
-      </div>
 
-      {error && (
-        <div className="text-red-500 text-sm font-medium">{error}</div>
-      )}
-
-      <div className="flex justify-end space-x-2">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={onCancel}
-          className="text-gray-500"
-        >
-          Abbrechen
-        </Button>
-        <Button
-          type="button"
-          onClick={handleSubmit}
-          className="bg-[hsl(345.3,82.7%,40.8%)] hover:bg-[hsl(345.3,82.7%,35%)] text-white"
-        >
-          Umfrage erstellen
-        </Button>
-      </div>
-    </div>
+        <div className="flex justify-end gap-2">
+          <Button
+            variant="outline"
+            onClick={onCancel}
+          >
+            Abbrechen
+          </Button>
+          <Button onClick={handleSubmit}>
+            Umfrage erstellen
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   );
 }

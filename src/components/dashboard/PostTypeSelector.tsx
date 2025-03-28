@@ -16,8 +16,9 @@ export type PostType =
   | "travel";
 
 interface PostTypeSelectorProps {
-  selectedType: PostType;
-  onTypeChange: (type: PostType) => void;
+  selected: PostType;
+  onSelect: (type: PostType) => void;
+  onPollCreate?: () => void;
 }
 
 interface PostTypeOption {
@@ -27,7 +28,7 @@ interface PostTypeOption {
   description: string;
 }
 
-export function PostTypeSelector({ selectedType, onTypeChange }: PostTypeSelectorProps) {
+export function PostTypeSelector({ selected, onSelect, onPollCreate }: PostTypeSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -67,56 +68,6 @@ export function PostTypeSelector({ selectedType, onTypeChange }: PostTypeSelecto
       description: "Kündige ein Event oder eine Veranstaltung an"
     },
     {
-      id: "availability",
-      label: "Verfügbarkeit",
-      icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      ),
-      description: "Teile deine Arbeitszeiten oder wann du verfügbar bist"
-    },
-    {
-      id: "review",
-      label: "Bewertung",
-      icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-        </svg>
-      ),
-      description: "Teile eine Kundenbewertung (mit Erlaubnis)"
-    },
-    {
-      id: "update",
-      label: "Update",
-      icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-        </svg>
-      ),
-      description: "Teile Neuigkeiten oder Updates zu deinem Profil"
-    },
-    {
-      id: "milestone",
-      label: "Meilenstein",
-      icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-        </svg>
-      ),
-      description: "Feiere ein Jubiläum oder einen besonderen Erfolg"
-    },
-    {
-      id: "offer",
-      label: "Angebot",
-      icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      ),
-      description: "Teile ein Spezialangebot oder einen Rabatt"
-    },
-    {
       id: "poll",
       label: "Umfrage",
       icon: (
@@ -124,36 +75,30 @@ export function PostTypeSelector({ selectedType, onTypeChange }: PostTypeSelecto
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
         </svg>
       ),
-      description: "Erstelle eine Umfrage, um Feedback zu erhalten"
-    },
-    {
-      id: "travel",
-      label: "Reiseplan",
-      icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-        </svg>
-      ),
-      description: "Teile deine Reisepläne oder bevorstehende Besuche"
+      description: "Erstelle eine Umfrage für deine Follower"
     }
   ];
 
-  // Finde den aktuell ausgewählten Typ
-  const currentType = postTypes.find(type => type.id === selectedType) || postTypes[0];
+  const handleTypeSelect = (type: PostType) => {
+    if (type === "poll" && onPollCreate) {
+      onPollCreate();
+    } else {
+      onSelect(type);
+    }
+    setIsOpen(false);
+  };
 
   return (
-    <div className="relative z-[9999]" ref={dropdownRef}>
+    <div className="relative" ref={dropdownRef}>
       <Button
         variant="outline"
-        size="sm"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-between w-full text-gray-800 dark:text-gray-200 hover:bg-[hsl(345.3,82.7%,40.8%)] hover:text-white"
+        className="w-full justify-between"
       >
-        <div className="flex items-center">
-          <span className="mr-4">{currentType.icon}</span>
-          <span>{currentType.label}</span>
-        </div>
+        <span className="flex items-center gap-2">
+          {postTypes.find(type => type.id === selected)?.icon}
+          {postTypes.find(type => type.id === selected)?.label}
+        </span>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-180' : ''}`}
@@ -166,37 +111,24 @@ export function PostTypeSelector({ selectedType, onTypeChange }: PostTypeSelecto
       </Button>
 
       {isOpen && (
-        <>
-          <div className="fixed inset-0 bg-black/50 z-[9998]" onClick={() => setIsOpen(false)}></div>
-          <div className="fixed z-[9999] shadow-lg max-h-[80vh] overflow-y-auto bg-white dark:bg-gray-950 rounded-lg" style={{ 
-            top: dropdownRef.current ? dropdownRef.current.getBoundingClientRect().bottom + 8 : 0, 
-            left: dropdownRef.current ? dropdownRef.current.getBoundingClientRect().left : 0,
-            width: dropdownRef.current ? dropdownRef.current.getBoundingClientRect().width : 'auto'
-          }}>
-            <CardContent className="p-4">
-              <div className="grid grid-cols-1 gap-3 py-2">
-                {postTypes.map((type) => (
-                  <Button
-                    key={type.id}
-                    variant={type.id === selectedType ? "default" : "ghost"}
-                    size="default"
-                    className={`justify-start w-full flex items-center ${type.id === selectedType ? "bg-[hsl(345.3,82.7%,40.8%)] text-white" : "text-gray-800 dark:text-gray-200 hover:bg-[hsl(345.3,82.7%,40.8%)] hover:text-white"}`}
-                    onClick={() => {
-                      onTypeChange(type.id);
-                      setIsOpen(false);
-                    }}
-                  >
-                    <span className="mr-4">{type.icon}</span>
-                    <div className="text-left flex-1 min-w-0">
-                      <div className="font-medium">{type.label}</div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400 truncate">{type.description}</div>
-                    </div>
-                  </Button>
-                ))}
-              </div>
-            </CardContent>
-          </div>
-        </>
+        <Card className="absolute z-50 w-full mt-2">
+          <CardContent className="p-2">
+            {postTypes.map((type) => (
+              <Button
+                key={type.id}
+                variant="ghost"
+                className="w-full justify-start gap-2 mb-1"
+                onClick={() => handleTypeSelect(type.id)}
+              >
+                {type.icon}
+                <div className="text-left">
+                  <div className="font-medium">{type.label}</div>
+                  <div className="text-xs text-muted-foreground">{type.description}</div>
+                </div>
+              </Button>
+            ))}
+          </CardContent>
+        </Card>
       )}
     </div>
   );

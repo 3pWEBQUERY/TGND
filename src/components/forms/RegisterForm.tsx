@@ -7,6 +7,12 @@ import { z } from "zod";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { UserRole } from "@prisma/client";
+import { uploadImage } from "@/lib/firebase/storage";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
+import Image from "next/image";
 
 // Validierungsschema für das Registrierungsformular
 const registerSchema = z.object({
@@ -102,94 +108,66 @@ export function RegisterForm() {
       setSelectedImageUrl(null);
       return;
     }
-    
+
     const file = e.target.files[0];
     
-    // Prüfen Sie die Dateigröße (5MB Limit)
-    if (file.size > 5 * 1024 * 1024) {
-      alert('Das Bild darf nicht größer als 5MB sein');
+    // Überprüfe Dateityp
+    if (!file.type.startsWith('image/')) {
+      toast.error('Bitte wähle ein gültiges Bildformat');
       return;
     }
     
+    // Überprüfe Dateigröße (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Das Bild darf maximal 5MB groß sein');
+      return;
+    }
+
     setSelectedImage(file);
-    const objectUrl = URL.createObjectURL(file);
-    setSelectedImageUrl(objectUrl);
-    
-    // Wir laden das Bild noch nicht hoch, das geschieht erst beim finalen Submit
+    setSelectedImageUrl(URL.createObjectURL(file));
   };
 
   const onSubmit = async (data: RegisterFormValues) => {
-    console.log('Form submitted', { step, data });
-    
-    // Wir verwenden jetzt separate Button-Handler für die Schritte 1-3
-    // Dieser Handler wird nur für den finalen Submit in Schritt 4 verwendet
-
-    setIsLoading(true);
-    setError(null);
-
     try {
-      // Bild hochladen, falls eines ausgewählt wurde
+      setIsLoading(true);
+      setError(null);
+
       let profileImageUrl = null;
+      
+      // Bild hochladen, wenn eines ausgewählt wurde
       if (selectedImage) {
-        console.log('Uploading image...');
         try {
-          const formData = new FormData();
-          formData.append('file', selectedImage);
-
-          const response = await fetch('/api/register-upload', {
-            method: 'POST',
-            body: formData,
-          });
-
-          const data = await response.json();
-
-          if (!response.ok) {
-            throw new Error(data.error || 'Upload fehlgeschlagen');
-          }
-
-          profileImageUrl = data.url;
-          setUploadedImageUrl(profileImageUrl);
-          console.log('Image uploaded:', profileImageUrl);
-        } catch (uploadError: any) {
-          console.error('Fehler beim Hochladen des Bildes:', uploadError);
-          setError(uploadError.message || 'Das Bild konnte nicht hochgeladen werden. Bitte versuche es erneut.');
-          setIsLoading(false);
+          const { url } = await uploadImage(selectedImage);
+          profileImageUrl = url;
+          setUploadedImageUrl(url);
+        } catch (error) {
+          console.error('Fehler beim Hochladen des Profilbilds:', error);
+          toast.error('Fehler beim Hochladen des Profilbilds');
           return;
         }
       }
-      
-      const response = await fetch("/api/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+
+      const response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: data.email,
-          name: data.name,
-          password: data.password,
-          role: data.role,
-          profile: {
-            displayName: data.displayName,
-            // phoneNumber entfernt und durch profileImage ersetzt
-            profileImage: profileImageUrl,
-            location: data.location,
-            gender: data.gender,
-            age: data.age,
-            bio: data.bio,
-          },
+          ...data,
+          profileImage: profileImageUrl,
         }),
       });
 
-      const responseData = await response.json();
-
       if (!response.ok) {
-        throw new Error(responseData.message || "Registrierung fehlgeschlagen");
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Registrierung fehlgeschlagen');
       }
 
-      // Weiterleitung zur Login-Seite nach erfolgreicher Registrierung
-      router.push("/auth/login?registered=true");
-    } catch (error: any) {
-      setError(error.message || "Ein unbekannter Fehler ist aufgetreten");
+      toast.success('Registrierung erfolgreich!');
+      router.push('/auth/login');
+    } catch (error) {
+      console.error('Registrierungsfehler:', error);
+      setError(error instanceof Error ? error.message : 'Ein Fehler ist aufgetreten');
+      toast.error(error instanceof Error ? error.message : 'Ein Fehler ist aufgetreten');
+    } finally {
       setIsLoading(false);
     }
   };
@@ -442,6 +420,29 @@ export function RegisterForm() {
         {step === 3 && (
           <div className="space-y-4">
             <div className="mb-4">
+              <Label htmlFor="profileImage">Profilbild</Label>
+              <div className="flex flex-col items-center gap-4">
+                {selectedImageUrl && (
+                  <div className="relative w-32 h-32 rounded-full overflow-hidden">
+                    <Image
+                      src={selectedImageUrl}
+                      alt="Vorschau"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                )}
+                <Input
+                  id="profileImage"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="cursor-pointer"
+                />
+              </div>
+            </div>
+
+            <div className="mb-4">
               <label
                 htmlFor="displayName"
                 className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
@@ -459,42 +460,6 @@ export function RegisterForm() {
               {errors.displayName && (
                 <p className="text-red-500 text-xs mt-1">{errors.displayName.message}</p>
               )}
-            </div>
-
-            <div className="mb-4">
-              <label
-                htmlFor="profileImage"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-              >
-                Profilbild (optional)
-              </label>
-              <div className="flex items-center gap-4">
-                {selectedImageUrl && (
-                  <div className="relative w-20 h-20 rounded-full overflow-hidden">
-                    <img 
-                      src={selectedImageUrl} 
-                      alt="Vorschau" 
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                )}
-                <div className="flex-1">
-                  <input
-                    id="profileImage"
-                    type="file"
-                    accept="image/*"
-                    className="block w-full text-sm text-gray-500 dark:text-gray-400
-                      file:mr-4 file:py-2 file:px-4 file:rounded-md
-                      file:border-0 file:text-sm file:font-medium
-                      file:bg-[hsl(var(--primary))/10] file:text-[hsl(var(--primary))]
-                      hover:file:bg-[hsl(var(--primary))/20]
-                    "
-                    onChange={handleImageChange}
-                    disabled={isLoading}
-                  />
-                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">PNG, JPG oder GIF bis 5MB</p>
-                </div>
-              </div>
             </div>
 
             <div className="mb-4">
