@@ -7,7 +7,6 @@ import { z } from "zod";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { UserRole } from "@prisma/client";
-import { put } from '@vercel/blob';
 
 // Validierungsschema für das Registrierungsformular
 const registerSchema = z.object({
@@ -132,25 +131,28 @@ export function RegisterForm() {
       // Bild hochladen, falls eines ausgewählt wurde
       let profileImageUrl = null;
       if (selectedImage) {
+        console.log('Uploading image...');
         try {
-          console.log('Uploading image...');
-          // Wir nutzen hier den Vercel Blob Service mit dem Token als Umgebungsvariable
-          const blob = await put(
-            `profile-images/${Date.now()}-${selectedImage.name}`, 
-            selectedImage, 
-            {
-              access: 'public',
-              // Hier sollte in einer echten Umgebung der Token aus der Umgebungsvariable kommen
-              // Client-seitig müssen wir NEXT_PUBLIC_ Präfix verwenden
-              token: 'vercel_blob_rw_uK0IOn1rRNJcEue5_CpFhASohQkHx9dw9DVP7wI0qnoOpU6',
-            }
-          );
-          profileImageUrl = blob.url;
+          const formData = new FormData();
+          formData.append('file', selectedImage);
+
+          const response = await fetch('/api/register-upload', {
+            method: 'POST',
+            body: formData,
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.error || 'Upload fehlgeschlagen');
+          }
+
+          profileImageUrl = data.url;
           setUploadedImageUrl(profileImageUrl);
           console.log('Image uploaded:', profileImageUrl);
-        } catch (uploadError) {
+        } catch (uploadError: any) {
           console.error('Fehler beim Hochladen des Bildes:', uploadError);
-          setError('Das Bild konnte nicht hochgeladen werden. Bitte versuche es erneut.');
+          setError(uploadError.message || 'Das Bild konnte nicht hochgeladen werden. Bitte versuche es erneut.');
           setIsLoading(false);
           return;
         }
